@@ -6,11 +6,12 @@
 #
 # Syntaxe: # sudo ./nagiosautoinstall-ubuntu.sh
 #
-version="0.71"
+version="0.72"
 
 nagios_core_version="3"
 nagios_core_subversion="3.2.3"
 nagios_plugins_version="1.4.15"
+nrpe_version="2.12"
 
 # Fonction: installation
 installation() {
@@ -41,11 +42,13 @@ installation() {
   echo "Telechargement des sources"
   echo "Nagios Core version:   $nagios_core_subversion"
   echo "Nagios Plugin version: $nagios_plugins_version"
+  echo "NRPE version:          $nrpe_version"
   echo "----------------------------------------------------"
   mkdir ~/$0
   cd ~/$0
   wget http://prdownloads.sourceforge.net/sourceforge/nagios/nagios-$nagios_core_subversion.tar.gz
   wget http://prdownloads.sourceforge.net/sourceforge/nagiosplug/nagios-plugins-$nagios_plugins_version.tar.gz
+  wget http://surfnet.dl.sourceforge.net/sourceforge/nagios/nrpe-$nrpe_version.tar.gz
 
   # Compilation de Nagios Core
   echo "----------------------------------------------------"
@@ -79,6 +82,17 @@ installation() {
   make
   make install
   cd ..
+
+  # Compilation de NRPE
+  echo "----------------------------------------------------"
+  echo "Compilation du plugin NRPE"
+  echo "----------------------------------------------------"
+  tar zxvf nrpe-$nrpe_version.tar.gz
+  cd nrpe-$nrpe_version
+  ./configure
+  make all
+  make install-plugin
+  cd ..  
 
   # Installation des plugins additionnels
   plugins_list="check_ddos.pl check_memory check_url.pl"
