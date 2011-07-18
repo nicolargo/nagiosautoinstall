@@ -1,1 +1,7 @@
-README.nagiosautoinstall
+Il y a plusieurs méthodes pour installer Nagios, le système de supervision libre, sur un nouveau serveur. La plus simple est d'utiliser les dépôts officiels de votre distribution GNU/Linux, avec le désavantage de ne pas avoir les dernières versions disponibles. La seconde est de suivre pas à pas mon tutoriel (PART 1 et 2) qui permet de faire une compilation depuis les sources. 
+
+J'ai développé un petit script (sous licence GPL) permettant d'automatiser l'installation d'un serveur Nagios complet sur une distribution GNU/Linux Ubuntu (j'ai validé le script sur Ubuntu Desktop et Ubuntu Server). Libre à vous de modifier ce script pour l'adapter à vos besoins. Si des âmes charitables veulent modifier le script pour l'adapter à d'autres distribution GNU/Linux ou BSD, je suis preneur pour les mettre en téléchargement sur mon SVN.
+
+Syntaxe:
+sudo ./nagiosautoinstall-ubuntu.sh
+

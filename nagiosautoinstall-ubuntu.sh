@@ -6,7 +6,7 @@
 #
 # Syntaxe: # sudo ./nagiosautoinstall-ubuntu.sh
 #
-version="0.72"
+version="0.73"
 
 nagios_core_version="3"
 nagios_core_subversion="3.2.3"
@@ -104,7 +104,8 @@ installation() {
   for i in `echo $plugins_list`
   do
     rm -f $i > /dev/null
-    wget http://svn.nicolargo.com/nagiosautoinstall/trunk/$i
+    # wget http://svn.nicolargo.com/nagiosautoinstall/trunk/$i
+    wget --no-check-certificate https://raw.github.com/nicolargo/nagiosautoinstall/master/$i
     chmod a+rx $i
     chown nagios:nagios $i
     # Conf file
