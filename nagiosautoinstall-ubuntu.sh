@@ -1,17 +1,20 @@
 #!/bin/sh
 #
-# Installation automatique de Nagios sous Ubuntu 9.10
+# Installation automatique de Nagios sous Ubuntu/Debian
 # Nicolas Hennion aka Nicolargo
 # Script libre: GPLv3
 #
 # Syntaxe: # sudo ./nagiosautoinstall-ubuntu.sh
 #
-version="0.73"
+version="0.8"
 
 nagios_core_version="3"
-nagios_core_subversion="3.2.3"
+nagios_core_subversion="3.3.1"
 nagios_plugins_version="1.4.15"
 nrpe_version="2.12"
+
+apt="apt-get -q -y --force-yes"
+wget="wget --no-check-certificate"
 
 # Fonction: installation
 installation() {
@@ -19,11 +22,11 @@ installation() {
   echo "----------------------------------------------------"
   echo "Installation de pre-requis / Configuration Postfix"
   echo "----------------------------------------------------"
-  aptitude install apache2 wget libapache2-mod-php5 build-essential libgd2-xpm-dev 
-  aptitude install bind9-host dnsutils libbind9-60 libdns66 libisc60 libisccc60 libisccfg60 liblwres60 libradius1 qstat radiusclient1 snmp snmpd
-  aptitude install libgd2-noxpm-dev libpng12-dev libjpeg62 libjpeg62-dev
-  aptitude install fping libnet-snmp-perl libldap-dev libmysqlclient-dev libgnutls-dev libradiusclient-ng-dev
-  aptitude install mailx postfix
+  $apt install apache2 wget libapache2-mod-php5 build-essential libgd2-xpm-dev 
+  $apt install bind9-host dnsutils libbind9-60 libdns66 libisc60 libisccc60 libisccfg60 liblwres60 libradius1 qstat radiusclient1 snmp snmpd
+  $apt install libgd2-noxpm-dev libpng12-dev libjpeg62 libjpeg62-dev
+  $apt install fping libnet-snmp-perl libldap-dev libmysqlclient-dev libgnutls-dev libradiusclient-ng-dev
+  $apt install mailx postfix
   ln -s /usr/bin/mail /bin/mail
 
   # Creation de l'utilisateur nagios et du groupe nagios
@@ -46,44 +49,47 @@ installation() {
   echo "----------------------------------------------------"
   mkdir ~/$0
   cd ~/$0
-  wget http://prdownloads.sourceforge.net/sourceforge/nagios/nagios-$nagios_core_subversion.tar.gz
-  wget http://prdownloads.sourceforge.net/sourceforge/nagiosplug/nagios-plugins-$nagios_plugins_version.tar.gz
-  wget http://surfnet.dl.sourceforge.net/sourceforge/nagios/nrpe-$nrpe_version.tar.gz
+  $wget http://prdownloads.sourceforge.net/sourceforge/nagios/nagios-$nagios_core_subversion.tar.gz
+  $wget http://prdownloads.sourceforge.net/sourceforge/nagiosplug/nagios-plugins-$nagios_plugins_version.tar.gz
+  $wget http://surfnet.dl.sourceforge.net/sourceforge/nagios/nrpe-$nrpe_version.tar.gz
 
   # Compilation de Nagios Core
   echo "----------------------------------------------------"
   echo "Compilation de Nagios Core"
   echo "----------------------------------------------------"
+  cd ~/$0
   tar zxvf nagios-$nagios_core_subversion.tar.gz
-  cd nagios-$nagios_core_subversion
-  ./configure --with-command-group=nagios
+  #cd nagios-$nagios_core_subversion
+  cd nagios
+  ./configure --with-nagios-user=nagios --with-nagios-group=nagios --with-command-user=nagios --with-command-group=nagios --enable-event-broker --enable-nanosleep --enable-embedded-perl --with-perlcache
   make all
-  make install
+  make fullinstall
   make install-config
-  make install-commandmode
-  make install-init
   ln -s /etc/init.d/nagios /etc/rcS.d/S99nagios
-  make install-webconf
+  # Hack RSS page de garde
+  cp -R ./html/includes/rss/* /usr/local/nagios/share/includes/rss/
+  chown -R nagios:nagios /usr/local/nagios/share/includes/rss/
+  # Fin hack
   echo "----------------------------------------------------"
   echo "Mot de passe pour acceder a l'interface Web"
   echo "Utilisateur: nagiosadmin"
   echo "----------------------------------------------------"
   htpasswd -c /usr/local/nagios/etc/htpasswd.users nagiosadmin
   /etc/init.d/apache2 reload
-  cd ..
 
   # Compilation de Nagios plugins
   echo "----------------------------------------------------"
   echo "Compilation de Nagios plugins"
   echo "----------------------------------------------------"
+  cd ~/$0
   tar zxvf nagios-plugins-$nagios_plugins_version.tar.gz
   cd nagios-plugins-$nagios_plugins_version
   ./configure --with-nagios-user=nagios --with-nagios-group=nagios
   make
   make install
-  cd ..
 
   # Compilation de NRPE
+  cd ~/$0
   echo "----------------------------------------------------"
   echo "Compilation du plugin NRPE"
   echo "----------------------------------------------------"
@@ -92,7 +98,6 @@ installation() {
   ./configure
   make all
   make install-plugin
-  cd ..  
 
   # Installation des plugins additionnels
   plugins_list="check_ddos.pl check_memory check_url.pl"
@@ -104,8 +109,7 @@ installation() {
   for i in `echo $plugins_list`
   do
     rm -f $i > /dev/null
-    # wget http://svn.nicolargo.com/nagiosautoinstall/trunk/$i
-    wget --no-check-certificate https://raw.github.com/nicolargo/nagiosautoinstall/master/$i
+    $wget https://raw.github.com/nicolargo/nagiosautoinstall/master/$i
     chmod a+rx $i
     chown nagios:nagios $i
     # Conf file

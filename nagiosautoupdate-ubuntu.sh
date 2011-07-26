@@ -1,25 +1,22 @@
 #!/bin/sh
 #
-# Mise à jour automatique de Nagios sous Ubuntu 9.10
+# Mise à jour automatique de Nagios sous Ubuntu/Debian
 # Nicolas Hennion aka Nicolargo
 # Script libre: GPLv3
 #
 # Syntaxe: # sudo ./nagiosautoupdate-ubuntu.sh
 #
-version="0.7"
+version="0.80"
 
 nagios_core_version="3"
-nagios_core_subversion="3.2.3"
+nagios_core_subversion="3.3.1"
 nagios_plugins_version="1.4.15"
+nrpe_version="2.12"
+
+wget="wget --no-check-certificate"
 
 # Fonction: installation
 update() {
-  # Pre-requis
-  # echo "----------------------------------------------------"
-  # echo "Mise à jour du système"
-  # echo "----------------------------------------------------"
-  # aptitude -y update
-  # aptitude -y upgrade
 
   # Backup
   echo "----------------------------------------------------"
@@ -41,9 +38,11 @@ update() {
   echo "Telechargement des sources"
   echo "Nagios Core version:   $nagios_core_subversion"
   echo "Nagios Plugin version: $nagios_plugins_version"
+  echo "NRPE version:          $nrpe_version"
   echo "----------------------------------------------------"
-  wget http://prdownloads.sourceforge.net/sourceforge/nagios/nagios-$nagios_core_subversion.tar.gz
-  wget http://prdownloads.sourceforge.net/sourceforge/nagiosplug/nagios-plugins-$nagios_plugins_version.tar.gz
+  $wget http://prdownloads.sourceforge.net/sourceforge/nagios/nagios-$nagios_core_subversion.tar.gz
+  $wget http://prdownloads.sourceforge.net/sourceforge/nagiosplug/nagios-plugins-$nagios_plugins_version.tar.gz
+  $wget http://surfnet.dl.sourceforge.net/sourceforge/nagios/nrpe-$nrpe_version.tar.gz
 
   # Compilation de Nagios Core
   echo "----------------------------------------------------"
@@ -51,12 +50,17 @@ update() {
   echo "----------------------------------------------------"
   cd /tmp/src
   tar zxvf nagios-$nagios_core_subversion.tar.gz
-  cd nagios-$nagios_core_subversion
-  ./configure --with-command-group=nagios
+  #cd nagios-$nagios_core_subversion
+  cd nagios
+  ./configure --with-nagios-user=nagios --with-nagios-group=nagios --with-command-user=nagios --with-command-group=nagios --enable-event-broker --enable-nanosleep --enable-embedded-perl --with-perlcache
   make all
-  make install
+  make fullinstall
   cp /usr/local/nagios/share/side.php /tmp/side.php.DEFAULT
-  cp /tmp/side.php.MODIF /usr/local/nagios/share/side.php
+  cp /tmp/side.php.MODIF /usr/local/nagios/share/side.OLD
+  # Hack RSS page de garde
+  cp -R ./html/includes/rss/* /usr/local/nagios/share/includes/rss/
+  chown -R nagios:nagios /usr/local/nagios/share/includes/rss/
+  # Fin hack
 
   # Compilation de Nagios plugins
   echo "----------------------------------------------------"
@@ -69,6 +73,17 @@ update() {
   make
   make install
   make install-root
+
+  # Compilation de NRPE
+  echo "----------------------------------------------------"
+  echo "Compilation du plugin NRPE"
+  echo "----------------------------------------------------"
+  cd /tmp/src
+  tar zxvf nrpe-$nrpe_version.tar.gz
+  cd nrpe-$nrpe_version
+  ./configure
+  make all
+  make install-plugin
 
   # On fixe les droits
   chown -R nagios:nagios /usr/local/nagios
