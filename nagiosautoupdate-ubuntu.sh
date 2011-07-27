@@ -6,7 +6,7 @@
 #
 # Syntaxe: # sudo ./nagiosautoupdate-ubuntu.sh
 #
-version="0.80"
+version="0.82"
 
 nagios_core_version="3"
 nagios_core_subversion="3.3.1"
@@ -54,13 +54,13 @@ update() {
   cd nagios
   ./configure --with-nagios-user=nagios --with-nagios-group=nagios --with-command-user=nagios --with-command-group=nagios --enable-event-broker --enable-nanosleep --enable-embedded-perl --with-perlcache
   make all
+  # Hack pb sur install HTML
+  sed -i 's/for file in includes\/rss\/\*\;/for file in includes\/rss\/\*\.\*\;/g' ./html/Makefile
+  sed -i 's/for file in includes\/rss\/extlib\/\*\;/for file in includes\/rss\/extlib\/\*\.\*\;/g' ./html/Makefile
+  # Fin hack
   make fullinstall
   cp /usr/local/nagios/share/side.php /tmp/side.php.DEFAULT
   cp /tmp/side.php.MODIF /usr/local/nagios/share/side.OLD
-  # Hack RSS page de garde
-  cp -R ./html/includes/rss/* /usr/local/nagios/share/includes/rss/
-  chown -R nagios:nagios /usr/local/nagios/share/includes/rss/
-  # Fin hack
 
   # Compilation de Nagios plugins
   echo "----------------------------------------------------"
