@@ -6,7 +6,7 @@
 #
 # Syntaxe: # sudo ./nagiosautoinstall-ubuntu.sh
 #
-version="0.81"
+version="0.82"
 
 nagios_core_version="3"
 nagios_core_subversion="3.3.1"
@@ -63,13 +63,13 @@ installation() {
   cd nagios
   ./configure --with-nagios-user=nagios --with-nagios-group=nagios --with-command-user=nagios --with-command-group=nagios --enable-event-broker --enable-nanosleep --enable-embedded-perl --with-perlcache
   make all
+  # Hack pb sur install HTML
+  sed -i 's/for file in includes\/rss\/\*\;/for file in includes\/rss\/\*\.\*\;/g' ./html/Makefile
+  sed -i 's/for file in includes\/rss\/extlib\/\*\;/for file in includes\/rss\/extlib\/\*\.\*\;/g' ./html/Makefile
+  # Fin hack
   make fullinstall
   make install-config
   ln -s /etc/init.d/nagios /etc/rcS.d/S99nagios
-  # Hack RSS page de garde
-  cp -R ./html/includes/rss/* /usr/local/nagios/share/includes/rss/
-  chown -R nagios:nagios /usr/local/nagios/share/includes/rss/
-  # Fin hack
   echo "----------------------------------------------------"
   echo "Mot de passe pour acceder a l'interface Web"
   echo "Utilisateur: nagiosadmin"
