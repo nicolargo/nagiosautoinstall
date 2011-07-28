@@ -13,5 +13,5 @@ Scripts testés et validés sur:
 ./nagiosautoinstall-ubuntu.sh
 
 == Syntaxe (en root ou via sudo) pour une mise à jour:
-./nagiosautoupdate-ubuntu.sh
+./nagiosautoupdate.py
 
