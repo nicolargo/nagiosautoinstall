@@ -28,7 +28,6 @@ update() {
   echo "----------------------------------------------------"
   cd /tmp
   tar zcvfh ./nagios-backup.tgz /usr/local/nagios --exclude var/archives
-  cp /usr/local/nagios/share/side.php side.php.MODIF
 
   # Pre-requis
   echo "----------------------------------------------------"
@@ -65,8 +64,6 @@ update() {
   sed -i 's/for file in includes\/rss\/extlib\/\*\;/for file in includes\/rss\/extlib\/\*\.\*\;/g' ./html/Makefile
   # Fin hack
   make fullinstall
-  cp /usr/local/nagios/share/side.php /tmp/side.php.DEFAULT
-  cp /tmp/side.php.MODIF /usr/local/nagios/share/side.OLD
 
   # Compilation de Nagios plugins
   echo "----------------------------------------------------"
@@ -94,7 +91,7 @@ update() {
   # On fixe les droits
   chown -R nagios:nagios /usr/local/nagios
 
-  # On supprime les fichiers temporaires  
+  # On supprime les fichiers temporaires
   cd /tmp
   rm -rf ./src
 }
@@ -105,13 +102,14 @@ check() {
   echo "Verification des fichiers de configuration de Nagios"
   echo "----------------------------------------------------"
   /usr/local/nagios/bin/nagios -v /usr/local/nagios/etc/nagios.cfg
-}   
+}
 
 # Fonction: Lancement de Nagios
 restart() {
   echo "----------------------------------------------------"
-  echo "Redemarrage de Nagios"
+  echo "Redemarrage de Nagios / NRPE"
   echo "----------------------------------------------------"
+  /etc/init.d/nagios-nrpe-server restart
   /etc/init.d/nagios restart
 }
 
