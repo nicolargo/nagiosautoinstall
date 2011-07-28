@@ -6,13 +6,14 @@
 #
 # Syntaxe: # sudo ./nagiosautoupdate-ubuntu.sh
 #
-version="0.82"
+version="0.83"
 
 nagios_core_version="3"
 nagios_core_subversion="3.3.1"
 nagios_plugins_version="1.4.15"
 nrpe_version="2.12"
 
+apt="apt-get -q -y --force-yes"
 wget="wget --no-check-certificate"
 
 # Fonction: installation
@@ -29,6 +30,11 @@ update() {
   tar zcvfh ./nagios-backup.tgz /usr/local/nagios --exclude var/archives
   cp /usr/local/nagios/share/side.php side.php.MODIF
 
+  # Pre-requis
+  echo "----------------------------------------------------"
+  echo "Installation de pre-requis / Configuration Postfix"
+  echo "----------------------------------------------------"
+  $apt install libperl-dev
 
   # Recuperation des sources
   cd /tmp
