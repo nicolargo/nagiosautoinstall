@@ -1,0 +1,21 @@
+#!/bin/sh
+#
+# Check RAID controler (Fusion-MPT SAS-2)
+# Dedibox 2011
+#
+# Author: Nicolas Hennion (aka) Nicolargo
+# GPL v3
+#
+# Add the following line to the sudoers file:
+# shinken ALL= NOPASSWD: /usr/sbin/sas2ircu 0 STATUS
+#
+VERSION="0.1"
+
+CONTROLER="0"
+CHECK_CMD=`sudo /usr/sbin/sas2ircu $CONTROLER STATUS | grep "Volume state"`
+
+echo $CHECK_CMD | grep "Optimal" 2>&1 > /dev/null
+CHECK_RETURN=$?
+
+echo $CHECK_CMD
+return $CHECK_RETURN
