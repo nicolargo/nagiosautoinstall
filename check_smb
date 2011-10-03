@@ -1,0 +1,61 @@
+#!/bin/sh
+
+# Check anon access to SMB for nagios.
+# Dave Love <fx@gnu.org>, 2005-07-15
+
+REVISION=1.0
+PROGNAME=`/usr/bin/basename $0`
+PROGPATH=`echo $0 | /bin/sed -e 's,[\\/][^\\/][^\\/]*$,,'`
+
+. $PROGPATH/utils.sh
+
+usage () {
+    echo "\
+Nagios plugin to check if (anonymous) access to SMB on host works.
+
+Usage:
+  $PROGNAME -H <host>
+  $PROGNAME --help
+  $PROGNAME --version
+"
+}
+
+help () {
+    print_revision $PROGNAME $REVISION
+    echo; usage; echo; support
+}
+
+if [ $# -lt 1 ] || [ $# -gt 2 ]; then
+    usage
+    exit $STATE_UNKNOWN
+fi
+
+while test -n "$1"; do
+    case "$1" in
+	--help | -h)
+	    help
+	    exit $STATE_OK;;
+	--version | -V)
+	    print_revision $PROGNAME $REVISION
+	    exit $STATE_OK;;
+	-H)
+	    shift
+	    host=$1;;
+	*)
+	    usage; exit $STATE_UNKNOWN;;
+    esac
+    shift
+done
+
+stdout=`/usr/bin/smbclient -U guest -N -L "$host" 2>&1`
+
+if [ $? -eq 0 ]; then
+    header=`echo "$stdout" | grep Server= | head -n 1`
+    echo "OK $header"
+    exit $STATE_OK
+else
+    err=`echo "$stdout" | head -n 1`
+    echo "CRITICAL SMB anon access: $err"
+    exit $STATE_CRITICAL
+fi
+
