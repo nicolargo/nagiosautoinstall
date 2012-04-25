@@ -6,7 +6,7 @@
 #
 # Syntaxe: # sudo ./nagiosautoinstall-ubuntu.sh
 #
-version="0.83"
+version="0.84"
 
 nagios_core_version="3"
 nagios_core_subversion="3.3.1"
@@ -27,7 +27,7 @@ installation() {
   $apt install libgd2-noxpm-dev libpng12-dev libjpeg62 libjpeg62-dev
   $apt install fping libnet-snmp-perl libldap-dev libmysqlclient-dev libgnutls-dev libradiusclient-ng-dev
   $apt install libssl-dev
-  $apt install mailx postfix
+  $apt install bsd-mailx mailx postfix
   ln -s /usr/bin/mail /bin/mail
 
   # Creation de l'utilisateur nagios et du groupe nagios
