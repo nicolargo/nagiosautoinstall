@@ -21,13 +21,13 @@ import os, sys, platform, getopt, shutil, logging, getpass
 # Global variables
 #-----------------------------------------------------------------------------
 
-_VERSION="0.9"
+_VERSION="0.91"
 _DEBUG = 0
 log_file = "/tmp/nagiosautoupdate.log"
 
 nagios_core_subversion="3.3.1"
 nagios_plugins_version="1.4.15"
-nrpe_version="2.12"
+nrpe_version="2.13"
 
 # Classes
 #-----------------------------------------------------------------------------
@@ -164,7 +164,7 @@ def nagiosupdate():
 
   # Double check if the libperl-dev is installed
   showexec ("Install prerequisites",
-            "apt-get -q -y --force-yes install libperl-dev", 1)
+            "apt-get -q -y --force-yes install libperl-dev libssl-dev", 1)
 
   # Download sources
   showexec ("Download Nagios Core version %s" % nagios_core_subversion,

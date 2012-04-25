@@ -6,12 +6,12 @@
 #
 # Syntaxe: # sudo ./nagiosautoinstall-ubuntu.sh
 #
-version="0.82"
+version="0.83"
 
 nagios_core_version="3"
 nagios_core_subversion="3.3.1"
 nagios_plugins_version="1.4.15"
-nrpe_version="2.12"
+nrpe_version="2.13"
 
 apt="apt-get -q -y --force-yes"
 wget="wget --no-check-certificate"
@@ -26,6 +26,7 @@ installation() {
   $apt install bind9-host dnsutils libbind9-60 libdns66 libisc60 libisccc60 libisccfg60 liblwres60 libradius1 qstat radiusclient1 snmp snmpd
   $apt install libgd2-noxpm-dev libpng12-dev libjpeg62 libjpeg62-dev
   $apt install fping libnet-snmp-perl libldap-dev libmysqlclient-dev libgnutls-dev libradiusclient-ng-dev
+  $apt install libssl-dev
   $apt install mailx postfix
   ln -s /usr/bin/mail /bin/mail
 

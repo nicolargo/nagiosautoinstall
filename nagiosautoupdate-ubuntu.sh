@@ -6,12 +6,12 @@
 #
 # Syntaxe: # sudo ./nagiosautoupdate-ubuntu.sh
 #
-version="0.83"
+version="0.84"
 
 nagios_core_version="3"
 nagios_core_subversion="3.3.1"
 nagios_plugins_version="1.4.15"
-nrpe_version="2.12"
+nrpe_version="2.13"
 
 apt="apt-get -q -y --force-yes"
 wget="wget --no-check-certificate"
@@ -34,6 +34,7 @@ update() {
   echo "Installation de pre-requis / Configuration Postfix"
   echo "----------------------------------------------------"
   $apt install libperl-dev
+  $apt install libssl-dev
 
   # Recuperation des sources
   cd /tmp
