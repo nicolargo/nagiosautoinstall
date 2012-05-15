@@ -21,11 +21,11 @@ import os, sys, platform, getopt, shutil, logging, getpass
 # Global variables
 #-----------------------------------------------------------------------------
 
-_VERSION="0.92"
+_VERSION="0.93"
 _DEBUG = 0
 log_file = "/tmp/nagiosautoupdate.log"
 
-nagios_core_subversion="3.4.0"
+nagios_core_subversion="3.4.1"
 nagios_plugins_version="1.4.15"
 nrpe_version="2.13"
 
