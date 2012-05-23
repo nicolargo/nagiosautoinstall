@@ -39,7 +39,7 @@ installation() {
   passwd nagios
   groupadd nagios
   usermod -G nagios nagios
-  usermod -G nagios www-data 
+  usermod -G nagios www-data
 
   # Recuperation des sources
   echo "----------------------------------------------------"
@@ -48,8 +48,8 @@ installation() {
   echo "Nagios Plugin version: $nagios_plugins_version"
   echo "NRPE version:          $nrpe_version"
   echo "----------------------------------------------------"
-  mkdir ~/$0
-  cd ~/$0
+  mkdir ~/nagiosinstall
+  cd ~/nagiosinstall
   $wget http://prdownloads.sourceforge.net/sourceforge/nagios/nagios-$nagios_core_subversion.tar.gz
   $wget http://prdownloads.sourceforge.net/sourceforge/nagiosplug/nagios-plugins-$nagios_plugins_version.tar.gz
   $wget http://surfnet.dl.sourceforge.net/sourceforge/nagios/nrpe-$nrpe_version.tar.gz
@@ -58,7 +58,7 @@ installation() {
   echo "----------------------------------------------------"
   echo "Compilation de Nagios Core"
   echo "----------------------------------------------------"
-  cd ~/$0
+  cd ~/nagiosinstall
   tar zxvf nagios-$nagios_core_subversion.tar.gz
   #cd nagios-$nagios_core_subversion
   cd nagios
@@ -82,7 +82,7 @@ installation() {
   echo "----------------------------------------------------"
   echo "Compilation de Nagios plugins"
   echo "----------------------------------------------------"
-  cd ~/$0
+  cd ~/nagiosinstall
   tar zxvf nagios-plugins-$nagios_plugins_version.tar.gz
   cd nagios-plugins-$nagios_plugins_version
   ./configure --with-nagios-user=nagios --with-nagios-group=nagios
@@ -90,7 +90,7 @@ installation() {
   make install
 
   # Compilation de NRPE
-  cd ~/$0
+  cd ~/nagiosinstall
   echo "----------------------------------------------------"
   echo "Compilation du plugin NRPE"
   echo "----------------------------------------------------"
@@ -156,7 +156,7 @@ EOF
 
   # On supprime les fichiers temporaires  
   cd ~
-  rm -rf ~/$0 
+  rm -rf ~/nagiosinstall 
 }
 
 # Fonction: Verifie si Nagios les fichiers de conf sont OK
