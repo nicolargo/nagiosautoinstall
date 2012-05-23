@@ -148,15 +148,15 @@ define command{
     command_line \$USER1\$/check_url.pl \$ARG1\$
 }
 EOF
-	;;      
+	;;
     	esac
     fi
   done
   cd -
 
-  # On supprime les fichiers temporaires  
+  # On supprime les fichiers temporaires
   cd ~
-  rm -rf ~/nagiosinstall 
+  rm -rf ~/nagiosinstall
 }
 
 # Fonction: Verifie si Nagios les fichiers de conf sont OK
@@ -165,7 +165,7 @@ check() {
   echo "Verification des fichiers de configuration de Nagios"
   echo "----------------------------------------------------"
   /usr/local/nagios/bin/nagios -v /usr/local/nagios/etc/nagios.cfg
-}   
+}
 
 # Fonction: Lancement de Nagios
 start() {
