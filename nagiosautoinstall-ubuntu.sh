@@ -27,7 +27,7 @@ installation() {
   $apt install libgd2-noxpm-dev libpng12-dev libjpeg62 libjpeg62-dev
   $apt install fping libnet-snmp-perl libldap-dev libmysqlclient-dev libgnutls-dev libradiusclient-ng-dev
   $apt install libssl-dev
-  $apt install bsd-mailx mailx postfix
+  $apt install bsd-mailx mailutils postfix
   ln -s /usr/bin/mail /bin/mail
 
   # Creation de l'utilisateur nagios et du groupe nagios
