@@ -15,6 +15,7 @@ nrpe_version="2.13"
 
 apt="apt-get -q -y --force-yes"
 wget="wget --no-check-certificate"
+check_x64=`uname -a | grep -e "_64"`
 
 # Fonction: installation
 installation() {
@@ -26,7 +27,7 @@ installation() {
   $apt install bind9-host dnsutils libbind9-60 libdns66 libisc60 libisccc60 libisccfg60 liblwres60 libradius1 qstat radiusclient1 snmp snmpd
   $apt install libgd2-noxpm-dev libpng12-dev libjpeg62 libjpeg62-dev
   $apt install fping libnet-snmp-perl libldap-dev libmysqlclient-dev libgnutls-dev libradiusclient-ng-dev
-  $apt install libssl-dev
+  $apt install libssl-dev openssl-blacklist openssl-blacklist-extra
   $apt install bsd-mailx mailutils postfix
   ln -s /usr/bin/mail /bin/mail
 
@@ -96,9 +97,13 @@ installation() {
   echo "----------------------------------------------------"
   tar zxvf nrpe-$nrpe_version.tar.gz
   cd nrpe-$nrpe_version
-  ./configure
+	if [[ $check_x64 -ne 0 ]]
+		./configure --with-ssl=/usr/bin/openssl --with-ssl-lib=/usr/lib/x86_64-linux-gnu --enable-command-args --enable-ssl
+	else
+		./configure --with-ssl=/usr/bin/openssl --with-ssl-lib=/usr/lib --enable-command-args --enable-ssl
+	fi
   make all
-  make install-plugin
+  make install-plugin && make install-daemon && make install-daemon-config && make install-xinetd
 
   # Installation des plugins additionnels
   plugins_list="check_ddos.pl check_memory check_url.pl"
