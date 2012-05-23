@@ -97,7 +97,7 @@ installation() {
   echo "----------------------------------------------------"
   tar zxvf nrpe-$nrpe_version.tar.gz
   cd nrpe-$nrpe_version
-	if [[ $check_x64 -ne 0 ]]
+	if [[ $check_x64 -ne 0 ]]; then
 		./configure --with-ssl=/usr/bin/openssl --with-ssl-lib=/usr/lib/x86_64-linux-gnu --enable-command-args --enable-ssl
 	else
 		./configure --with-ssl=/usr/bin/openssl --with-ssl-lib=/usr/lib --enable-command-args --enable-ssl
