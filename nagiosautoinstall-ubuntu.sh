@@ -15,6 +15,7 @@ nrpe_version="2.13"
 
 apt="apt-get -q -y --force-yes"
 wget="wget --no-check-certificate"
+check_x64=`uname -a | grep -e "_64"`
 
 # Fonction: installation
 installation() {
@@ -26,20 +27,17 @@ installation() {
   $apt install bind9-host dnsutils libbind9-60 libdns66 libisc60 libisccc60 libisccfg60 liblwres60 libradius1 qstat radiusclient1 snmp snmpd
   $apt install libgd2-noxpm-dev libpng12-dev libjpeg62 libjpeg62-dev
   $apt install fping libnet-snmp-perl libldap-dev libmysqlclient-dev libgnutls-dev libradiusclient-ng-dev
-  $apt install libssl-dev
-  $apt install bsd-mailx mailx postfix
+  $apt install libssl-dev openssl-blacklist openssl-blacklist-extra
+  $apt install bsd-mailx mailutils postfix
   ln -s /usr/bin/mail /bin/mail
 
   # Creation de l'utilisateur nagios et du groupe nagios
   echo "----------------------------------------------------"
   echo "Creation utilisateur nagios et groupe nagios"
   echo "----------------------------------------------------"
-  useradd -M -s /bin/noshellneeded nagios
+  useradd -m -G www-data -s /bin/bash nagios
   echo "Fixer un mot de passe pour l'utilisateur nagios"
   passwd nagios
-  groupadd nagios
-  usermod -G nagios nagios
-  usermod -G nagios www-data 
 
   # Recuperation des sources
   echo "----------------------------------------------------"
@@ -48,8 +46,8 @@ installation() {
   echo "Nagios Plugin version: $nagios_plugins_version"
   echo "NRPE version:          $nrpe_version"
   echo "----------------------------------------------------"
-  mkdir ~/$0
-  cd ~/$0
+  mkdir ~/nagiosinstall
+  cd ~/nagiosinstall
   $wget http://prdownloads.sourceforge.net/sourceforge/nagios/nagios-$nagios_core_subversion.tar.gz
   $wget http://prdownloads.sourceforge.net/sourceforge/nagiosplug/nagios-plugins-$nagios_plugins_version.tar.gz
   $wget http://surfnet.dl.sourceforge.net/sourceforge/nagios/nrpe-$nrpe_version.tar.gz
@@ -58,7 +56,7 @@ installation() {
   echo "----------------------------------------------------"
   echo "Compilation de Nagios Core"
   echo "----------------------------------------------------"
-  cd ~/$0
+  cd ~/nagiosinstall
   tar zxvf nagios-$nagios_core_subversion.tar.gz
   #cd nagios-$nagios_core_subversion
   cd nagios
@@ -82,7 +80,7 @@ installation() {
   echo "----------------------------------------------------"
   echo "Compilation de Nagios plugins"
   echo "----------------------------------------------------"
-  cd ~/$0
+  cd ~/nagiosinstall
   tar zxvf nagios-plugins-$nagios_plugins_version.tar.gz
   cd nagios-plugins-$nagios_plugins_version
   ./configure --with-nagios-user=nagios --with-nagios-group=nagios
@@ -90,15 +88,19 @@ installation() {
   make install
 
   # Compilation de NRPE
-  cd ~/$0
+  cd ~/nagiosinstall
   echo "----------------------------------------------------"
   echo "Compilation du plugin NRPE"
   echo "----------------------------------------------------"
   tar zxvf nrpe-$nrpe_version.tar.gz
   cd nrpe-$nrpe_version
-  ./configure
+	if [[ $check_x64 -ne 0 ]]; then
+		./configure --with-ssl=/usr/bin/openssl --with-ssl-lib=/usr/lib/x86_64-linux-gnu --enable-command-args --enable-ssl
+	else
+		./configure --with-ssl=/usr/bin/openssl --with-ssl-lib=/usr/lib --enable-command-args --enable-ssl
+	fi
   make all
-  make install-plugin
+  make install-plugin && make install-daemon && make install-daemon-config && make install-xinetd
 
   # Installation des plugins additionnels
   plugins_list="check_ddos.pl check_memory check_url.pl"
@@ -148,15 +150,15 @@ define command{
     command_line \$USER1\$/check_url.pl \$ARG1\$
 }
 EOF
-	;;      
+	;;
     	esac
     fi
   done
   cd -
 
-  # On supprime les fichiers temporaires  
+  # On supprime les fichiers temporaires
   cd ~
-  rm -rf ~/$0 
+  rm -rf ~/nagiosinstall
 }
 
 # Fonction: Verifie si Nagios les fichiers de conf sont OK
@@ -165,7 +167,7 @@ check() {
   echo "Verification des fichiers de configuration de Nagios"
   echo "----------------------------------------------------"
   /usr/local/nagios/bin/nagios -v /usr/local/nagios/etc/nagios.cfg
-}   
+}
 
 # Fonction: Lancement de Nagios
 start() {
