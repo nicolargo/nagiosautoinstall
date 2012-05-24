@@ -35,12 +35,9 @@ installation() {
   echo "----------------------------------------------------"
   echo "Creation utilisateur nagios et groupe nagios"
   echo "----------------------------------------------------"
-  useradd -M -s /bin/noshellneeded nagios
+  useradd -m -G www-data -s /bin/bash nagios
   echo "Fixer un mot de passe pour l'utilisateur nagios"
   passwd nagios
-  groupadd nagios
-  usermod -G nagios nagios
-  usermod -G nagios www-data
 
   # Recuperation des sources
   echo "----------------------------------------------------"
