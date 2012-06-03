@@ -83,7 +83,7 @@ installation() {
   cd ~/nagiosinstall
   tar zxvf nagios-plugins-$nagios_plugins_version.tar.gz
   cd nagios-plugins-$nagios_plugins_version
-  ./configure --with-nagios-user=nagios --with-nagios-group=nagios
+  ./configure --with-nagios-user=nagios --with-nagios-group=nagios --enable-extra-opts
   make
   make install
 
