@@ -6,7 +6,7 @@
 #
 # Syntaxe: # sudo ./nagiosautoinstall-ubuntu.sh
 #
-version="0.94"
+version="0.95"
 
 nagios_core_version="3"
 nagios_core_subversion="3.4.1"
@@ -24,7 +24,7 @@ installation() {
   echo "Installation de pre-requis / Configuration Postfix"
   echo "----------------------------------------------------"
   $apt install apache2 wget libapache2-mod-php5 build-essential libgd2-xpm-dev libperl-dev
-  $apt install bind9-host dnsutils libbind9-60 libdns66 libisc60 libisccc60 libisccfg60 liblwres60 libradius1 qstat radiusclient1 snmp snmpd
+  $apt install bind9-host dnsutils libbind9-80 libdns81 libisc83 libisccc80 libisccfg82 liblwres80 libradius1 qstat radiusclient1 snmp snmpd  
   $apt install libgd2-noxpm-dev libpng12-dev libjpeg62 libjpeg62-dev
   $apt install fping libnet-snmp-perl libldap-dev libmysqlclient-dev libgnutls-dev libradiusclient-ng-dev
   $apt install libssl-dev openssl-blacklist openssl-blacklist-extra
