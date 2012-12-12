@@ -14,7 +14,7 @@ nagios_plugins_version="1.4.16"
 nrpe_version="2.13"
 
 apt="apt-get -q -y --force-yes"
-wget="wget --no-check-certificate"
+wget="wget --no-check-certificate -c"
 check_x64=`uname -a | grep -e "_64"`
 
 # Fonction: installation

@@ -37,7 +37,7 @@ update() {
   echo "Telechargement des sources"
   echo "Nagios Plugin version: $nagios_plugins_version"
   echo "----------------------------------------------------"
-  wget http://prdownloads.sourceforge.net/sourceforge/nagiosplug/nagios-plugins-$nagios_plugins_version.tar.gz
+  wget -c http://prdownloads.sourceforge.net/sourceforge/nagiosplug/nagios-plugins-$nagios_plugins_version.tar.gz
 
   # Compilation de Nagios plugins
   echo "----------------------------------------------------"

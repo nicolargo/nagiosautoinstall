@@ -168,11 +168,11 @@ def nagiosupdate():
 
   # Download sources
   showexec ("Download Nagios Core version %s" % nagios_core_subversion,
-            "wget --no-check-certificate -O /tmp/nagios-%s.tar.gz http://prdownloads.sourceforge.net/sourceforge/nagios/nagios-%s.tar.gz" % (nagios_core_subversion, nagios_core_subversion), 1)
+            "wget --no-check-certificate -c -O /tmp/nagios-%s.tar.gz http://prdownloads.sourceforge.net/sourceforge/nagios/nagios-%s.tar.gz" % (nagios_core_subversion, nagios_core_subversion), 1)
   showexec ("Download Nagios Plugins version %s" % nagios_plugins_version,
-            "wget --no-check-certificate -O /tmp/nagios-plugins-%s.tar.gz http://prdownloads.sourceforge.net/sourceforge/nagiosplug/nagios-plugins-%s.tar.gz" % (nagios_plugins_version, nagios_plugins_version), 1)
+            "wget --no-check-certificate -c -O /tmp/nagios-plugins-%s.tar.gz http://prdownloads.sourceforge.net/sourceforge/nagiosplug/nagios-plugins-%s.tar.gz" % (nagios_plugins_version, nagios_plugins_version), 1)
   showexec ("Download NRPE version %s" % nrpe_version,
-            "wget --no-check-certificate -O /tmp/nrpe-%s.tar.gz http://surfnet.dl.sourceforge.net/sourceforge/nagios/nrpe-%s.tar.gz" % (nrpe_version, nrpe_version), 1)
+            "wget --no-check-certificate -c -O /tmp/nrpe-%s.tar.gz http://surfnet.dl.sourceforge.net/sourceforge/nagios/nrpe-%s.tar.gz" % (nrpe_version, nrpe_version), 1)
 
   # Update Nagios Core
   showexec ("Uncompress Nagios Core" ,
