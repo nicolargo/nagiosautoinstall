@@ -6,9 +6,9 @@
 #
 # Syntaxe: # sudo ./nagiospluginsautoupdate-ubuntu.sh
 #
-version="0.6"
+version="0.7"
 
-nagios_plugins_version="1.4.15"
+nagios_plugins_version="1.4.16"
 
 # Fonction: installation
 update() {

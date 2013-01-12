@@ -6,10 +6,10 @@
 #
 # Syntaxe: # sudo ./nagiosautoupdate-ubuntu.sh
 #
-version="0.96"
+version="0.97"
 
 nagios_core_version="3"
-nagios_core_subversion="3.4.3"
+nagios_core_subversion="3.4.4"
 nagios_plugins_version="1.4.16"
 nrpe_version="2.13"
 
