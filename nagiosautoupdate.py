@@ -21,7 +21,7 @@ import os, sys, platform, getopt, shutil, logging, getpass
 # Global variables
 #-----------------------------------------------------------------------------
 
-_VERSION="0.97"
+_VERSION="0.98"
 _DEBUG = 0
 log_file = "/tmp/nagiosautoupdate.log"
 
@@ -199,8 +199,12 @@ def nagiosupdate():
   # Update NRPE
   showexec ("Uncompress Nagios NRPE" ,
             "cd /tmp ; tar zxvf nrpe-%s.tar.gz" % nrpe_version, 1)
-  showexec ("Configure Nagios NRPE" ,
-            "cd /tmp/nrpe-%s ; ./configure" % nrpe_version, 1)
+  if (platform.architecture()[0].startswith('64')):
+    showexec ("Configure Nagios NRPE" ,
+              "cd /tmp/nrpe-%s ; ./configure --with-ssl=/usr/bin/openssl --with-ssl-lib=/usr/lib/x86_64-linux-gnu --enable-command-args --enable-ssl" % nrpe_version, 1)
+  else:  
+    showexec ("Configure Nagios NRPE" ,
+              "cd /tmp/nrpe-%s ; ./configure --with-ssl=/usr/bin/openssl --with-ssl-lib=/usr/lib --enable-command-args --enable-ssl" % nrpe_version, 1)
   showexec ("Make Nagios NRPE" ,
             "cd /tmp/nrpe-%s ; make all" % nrpe_version, 1)
   showexec ("Install Nagios NRPE" ,
