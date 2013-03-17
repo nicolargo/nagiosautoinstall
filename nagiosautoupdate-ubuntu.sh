@@ -6,12 +6,12 @@
 #
 # Syntaxe: # sudo ./nagiosautoupdate-ubuntu.sh
 #
-version="0.97"
+version="0.98"
 
 nagios_core_version="3"
-nagios_core_subversion="3.4.4"
+nagios_core_subversion="3.5.0"
 nagios_plugins_version="1.4.16"
-nrpe_version="2.13"
+nrpe_version="2.14"
 
 apt="apt-get -q -y --force-yes"
 wget="wget --no-check-certificate -c"
