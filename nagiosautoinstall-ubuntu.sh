@@ -9,9 +9,9 @@
 version="1.00"
 
 nagios_core_version="3"
-nagios_core_subversion="3.5.0"
+nagios_core_subversion="3.5.1"
 nagios_plugins_version="1.4.16"
-nrpe_version="2.14"
+nrpe_version="2.15"
 
 apt="apt-get -q -y --force-yes"
 wget="wget --no-check-certificate -c"
