@@ -25,9 +25,9 @@ _VERSION="0.99"
 _DEBUG = 0
 log_file = "/tmp/nagiosautoupdate.log"
 
-nagios_core_subversion="3.5.0"
+nagios_core_subversion="3.5.1"
 nagios_plugins_version="1.4.16"
-nrpe_version="2.14"
+nrpe_version="2.15"
 
 # Classes
 #-----------------------------------------------------------------------------
