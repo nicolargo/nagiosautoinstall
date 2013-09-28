@@ -7,11 +7,13 @@ J'ai développé un petit script (sous licence GPL) permettant d'automatiser l'i
 Scripts testés et validés sur:
 - Ubuntu LTS Desktop 10.04 et 12.04
 - Ubuntu LTS Server 10.04 et 12.04
-- Debian 6.0 Squeeze
+- Debian 6.0 Squeeze et 7.0 Wheezy
 
 == Syntaxe (en root ou via sudo) pour une installation:
-./nagiosautoinstall-ubuntu.sh
+
+`./nagiosautoinstall-ubuntu.sh`
 
 == Syntaxe (en root ou via sudo) pour une mise à jour:
-./nagiosautoupdate.py
+
+`./nagiosautoupdate.py`
 
