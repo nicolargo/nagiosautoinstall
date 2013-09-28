@@ -21,13 +21,20 @@ import os, sys, platform, getopt, shutil, logging, getpass
 # Global variables
 #-----------------------------------------------------------------------------
 
-_VERSION="0.99"
+_VERSION = "4.0.0_01"
 _DEBUG = 0
 log_file = "/tmp/nagiosautoupdate.log"
 
-nagios_core_subversion="3.5.0"
-nagios_plugins_version="1.4.16"
-nrpe_version="2.14"
+nagios_core_version = "4"
+nagios_core_subversion = "4.0.0"
+nagios_plugins_version = "1.4.16"
+nrpe_version = "2.15"
+
+nagios_user = "nagios"
+nagios_group = "nagios"
+
+###################################
+# Do not touch code under this line
 
 # Classes
 #-----------------------------------------------------------------------------
@@ -178,11 +185,11 @@ def nagiosupdate():
   showexec ("Uncompress Nagios Core" ,
             "cd /tmp ; tar zxvf nagios-%s.tar.gz" % nagios_core_subversion, 1)
   showexec ("Configure Nagios Core" ,
-            "cd /tmp/nagios ; ./configure --with-nagios-user=nagios --with-nagios-group=nagios --with-command-user=nagios --with-command-group=nagios --enable-event-broker --enable-nanosleep --enable-embedded-perl --with-perlcache", 1)
+            "cd /tmp/nagios ; ./configure --with-nagios-user=%s --with-nagios-group=%s --with-command-user=%s --with-command-group=%s --enable-event-broker --enable-nanosleep --enable-embedded-perl --with-perlcache" % (nagios_user, nagios_group, nagios_user, nagios_group), 1)
   showexec ("Make Nagios Core" ,
             "cd /tmp/nagios ; make all", 1)
-  showexec ("Correct a bug in the installer (http://bit.ly/roq2ea)" ,
-            "cd /tmp/nagios/html ; sed -i 's/for file in includes\/rss\/\*\;/for file in includes\/rss\/\*\.\*\;/g' ./Makefile ; sed -i 's/for file in includes\/rss\/extlib\/\*\;/for file in includes\/rss\/extlib\/\*\.\*\;/g' ./Makefile", 1)
+  # showexec ("Correct a bug in the installer (http://bit.ly/roq2ea)" ,
+  #           "cd /tmp/nagios/html ; sed -i 's/for file in includes\/rss\/\*\;/for file in includes\/rss\/\*\.\*\;/g' ./Makefile ; sed -i 's/for file in includes\/rss\/extlib\/\*\;/for file in includes\/rss\/extlib\/\*\.\*\;/g' ./Makefile", 1)
   showexec ("Install Nagios Core" ,
             "cd /tmp/nagios ; make fullinstall", 1)
 
@@ -190,7 +197,7 @@ def nagiosupdate():
   showexec ("Uncompress Nagios Plugins" ,
             "cd /tmp ; tar zxvf nagios-plugins-%s.tar.gz" % nagios_plugins_version, 1)
   showexec ("Configure Nagios Plugins" ,
-            "cd /tmp/nagios-plugins-%s ; ./configure --with-nagios-user=nagios --with-nagios-group=nagios" % nagios_plugins_version, 1)
+            "cd /tmp/nagios-plugins-%s ; ./configure --with-nagios-user=%s --with-nagios-group=%s" % (nagios_plugins_version, nagios_user, nagios_group), 1)
   showexec ("Make Nagios Plugins" ,
             "cd /tmp/nagios-plugins-%s ; make" % nagios_plugins_version, 1)
   showexec ("Install Nagios Core" ,
@@ -201,10 +208,10 @@ def nagiosupdate():
             "cd /tmp ; tar zxvf nrpe-%s.tar.gz" % nrpe_version, 1)
   if (platform.architecture()[0].startswith('64')):
     showexec ("Configure Nagios NRPE" ,
-              "cd /tmp/nrpe-%s ; ./configure --with-ssl=/usr/bin/openssl --with-ssl-lib=/usr/lib/x86_64-linux-gnu --enable-command-args --enable-ssl" % nrpe_version, 1)
+              "cd /tmp/nrpe-%s ; ./configure --with-nagios-user=%s --with-nagios-group=%s --with-ssl=/usr/bin/openssl --with-ssl-lib=/usr/lib/x86_64-linux-gnu --enable-command-args --enable-ssl" % (nrpe_version, nagios_user, nagios_group), 1)
   else:  
     showexec ("Configure Nagios NRPE" ,
-              "cd /tmp/nrpe-%s ; ./configure --with-ssl=/usr/bin/openssl --with-ssl-lib=/usr/lib --enable-command-args --enable-ssl" % nrpe_version, 1)
+              "cd /tmp/nrpe-%s ; ./configure --with-nagios-user=%s --with-nagios-group=%s --with-ssl=/usr/bin/openssl --with-ssl-lib=/usr/lib --enable-command-args --enable-ssl" % (nrpe_version, nagios_user, nagios_group), 1)
   showexec ("Make Nagios NRPE" ,
             "cd /tmp/nrpe-%s ; make all" % nrpe_version, 1)
   showexec ("Install Nagios NRPE" ,
@@ -212,7 +219,7 @@ def nagiosupdate():
 
   # Set files rights
   showexec ("Set files rights to nagios:nagios" ,
-            "chown -R nagios:nagios /usr/local/nagios", 1)
+            "chown -R %s:%s /usr/local/nagios" % (nagios_user, nagios_group), 1)
 
 def nagioscheck():
   """

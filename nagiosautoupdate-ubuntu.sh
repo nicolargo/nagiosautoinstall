@@ -6,12 +6,22 @@
 #
 # Syntaxe: # sudo ./nagiosautoupdate-ubuntu.sh
 #
-version="0.98"
+# !!!
+# !!! Works fine but better use the Python script nagiosautoupdate.py 
+# !!!
 
-nagios_core_version="3"
-nagios_core_subversion="3.5.0"
+version="4.0.0_01"
+
+nagios_core_version="4"
+nagios_core_subversion="4.0.0"
 nagios_plugins_version="1.4.16"
-nrpe_version="2.14"
+nrpe_version="2.15"
+
+nagios_user="nagios"
+nagios_group="nagios"
+
+###################################
+# Do not touch code under this line
 
 apt="apt-get -q -y --force-yes"
 wget="wget --no-check-certificate -c"
@@ -53,27 +63,31 @@ update() {
   # Compilation de Nagios Core
   echo "----------------------------------------------------"
   echo "Compilation de Nagios Core"
+  echo "Nagios user:  $nagios_user"
+  echo "Nagios group: $nagios_group"
   echo "----------------------------------------------------"
   cd /tmp/src
   tar zxvf nagios-$nagios_core_subversion.tar.gz
-  #cd nagios-$nagios_core_subversion
   cd nagios
-  ./configure --with-nagios-user=nagios --with-nagios-group=nagios --with-command-user=nagios --with-command-group=nagios --enable-event-broker --enable-nanosleep --enable-embedded-perl --with-perlcache
+  ./configure --with-nagios-user=$nagios_user --with-nagios-group=$nagios_group --with-command-user=$nagios_user --with-command-group=$nagios_group --enable-event-broker --enable-nanosleep --enable-embedded-perl --with-perlcache
   make all
   # Hack pb sur install HTML
-  sed -i 's/for file in includes\/rss\/\*\;/for file in includes\/rss\/\*\.\*\;/g' ./html/Makefile
-  sed -i 's/for file in includes\/rss\/extlib\/\*\;/for file in includes\/rss\/extlib\/\*\.\*\;/g' ./html/Makefile
+  # No need anymore in version 4.0.0
+  # sed -i 's/for file in includes\/rss\/\*\;/for file in includes\/rss\/\*\.\*\;/g' ./html/Makefile
+  # sed -i 's/for file in includes\/rss\/extlib\/\*\;/for file in includes\/rss\/extlib\/\*\.\*\;/g' ./html/Makefile
   # Fin hack
   make fullinstall
 
   # Compilation de Nagios plugins
   echo "----------------------------------------------------"
   echo "Compilation de Nagios plugins"
+  echo "Nagios user:  $nagios_user"
+  echo "Nagios group: $nagios_group"  
   echo "----------------------------------------------------"
   cd /tmp/src
   tar zxvf nagios-plugins-$nagios_plugins_version.tar.gz
   cd nagios-plugins-$nagios_plugins_version
-  ./configure --with-nagios-user=nagios --with-nagios-group=nagios
+  ./configure --with-nagios-user=$nagios_user --with-nagios-group=$nagios_group
   make
   make install
   make install-root
@@ -81,16 +95,18 @@ update() {
   # Compilation de NRPE
   echo "----------------------------------------------------"
   echo "Compilation du plugin NRPE"
+  echo "Nagios user:  $nagios_user"
+  echo "Nagios group: $nagios_group"  
   echo "----------------------------------------------------"
   cd /tmp/src
   tar zxvf nrpe-$nrpe_version.tar.gz
   cd nrpe-$nrpe_version
-  ./configure
+  ./configure --with-nagios-user=$nagios_user --with-nagios-group=$nagios_group
   make all
   make install-plugin
 
   # On fixe les droits
-  chown -R nagios:nagios /usr/local/nagios
+  chown -R $nagios_user:$nagios_group /usr/local/nagios
 
   # On supprime les fichiers temporaires
   cd /tmp

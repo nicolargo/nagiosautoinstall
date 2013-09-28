@@ -6,12 +6,20 @@
 #
 # Syntaxe: # sudo ./nagiosautoinstall-ubuntu.sh
 #
-version="1.00"
+version="4.0.0_01"
 
-nagios_core_version="3"
-nagios_core_subversion="3.5.0"
+nagios_core_version="4"
+nagios_core_subversion="4.0.0"
 nagios_plugins_version="1.4.16"
-nrpe_version="2.14"
+nrpe_version="2.15"
+
+nagios_user="nagios"
+nagios_group="nagios"
+
+nagiosweb_user="nagiosadmin"
+
+###################################
+# Do not touch code under this line
 
 apt="apt-get -q -y --force-yes"
 wget="wget --no-check-certificate -c"
@@ -21,7 +29,7 @@ check_x64=`uname -a | grep -e "_64"`
 installation() {
   # Pre-requis
   echo "----------------------------------------------------"
-  echo "Installation de pre-requis / Configuration Postfix"
+  echo "Install common libs and configuration Postfix"
   echo "----------------------------------------------------"
   $apt install apache2 wget libapache2-mod-php5 build-essential libgd2-xpm-dev libperl-dev rrdtool librrds-perl
   $apt install bind9-host dnsutils bind9utils libradius1 qstat radiusclient1 snmp snmpd
@@ -33,15 +41,18 @@ installation() {
 
   # Creation de l'utilisateur nagios et du groupe nagios
   echo "----------------------------------------------------"
-  echo "Creation utilisateur nagios et groupe nagios"
+  echo "Create the Nagios user and group"
+  echo "Nagios user:  $nagios_user"
+  echo "Nagios group: $nagios_group"  
   echo "----------------------------------------------------"
-  useradd -m -G www-data -s /bin/bash nagios
-  echo "Fixer un mot de passe pour l'utilisateur nagios"
-  passwd nagios
+  echo "Add the Nagios user account ($nagios_user) in the www-data group"
+  useradd -m -G www-data -s /bin/bash $nagios_user
+  echo "Set a password for the Nagios user account ($nagios_user)"
+  passwd $nagios_user
 
   # Recuperation des sources
   echo "----------------------------------------------------"
-  echo "Telechargement des sources"
+  echo "Download sources"
   echo "Nagios Core version:   $nagios_core_subversion"
   echo "Nagios Plugin version: $nagios_plugins_version"
   echo "NRPE version:          $nrpe_version"
@@ -54,50 +65,45 @@ installation() {
 
   # Compilation de Nagios Core
   echo "----------------------------------------------------"
-  echo "Compilation de Nagios Core"
+  echo "Nagios Core compilation"
   echo "----------------------------------------------------"
   cd ~/nagiosinstall
   tar zxvf nagios-$nagios_core_subversion.tar.gz
-  #cd nagios-$nagios_core_subversion
   cd nagios
-  ./configure --with-nagios-user=nagios --with-nagios-group=nagios --with-command-user=nagios --with-command-group=nagios --enable-event-broker --enable-nanosleep --enable-embedded-perl --with-perlcache
+  ./configure --with-nagios-user=$nagios_user --with-nagios-group=$nagios_group --with-command-user=$nagios_user --with-command-group=$nagios_group --enable-event-broker --enable-nanosleep --enable-embedded-perl --with-perlcache
   make all
-  # Hack pb sur install HTML
-  sed -i 's/for file in includes\/rss\/\*\;/for file in includes\/rss\/\*\.\*\;/g' ./html/Makefile
-  sed -i 's/for file in includes\/rss\/extlib\/\*\;/for file in includes\/rss\/extlib\/\*\.\*\;/g' ./html/Makefile
-  # Fin hack
   make fullinstall
   make install-config
   ln -s /etc/init.d/nagios /etc/rcS.d/S99nagios
   echo "----------------------------------------------------"
-  echo "Mot de passe pour acceder a l'interface Web"
-  echo "Utilisateur: nagiosadmin"
+  echo "Set the password for the Nagios Web interface account"
+  echo "Nagios web interface account: $nagiosweb_user"
   echo "----------------------------------------------------"
-  htpasswd -c /usr/local/nagios/etc/htpasswd.users nagiosadmin
+  htpasswd -c /usr/local/nagios/etc/htpasswd.users $nagiosweb_user
   /etc/init.d/apache2 reload
 
   # Compilation de Nagios plugins
   echo "----------------------------------------------------"
-  echo "Compilation de Nagios plugins"
+  echo "Nagios plugins compilation"
   echo "----------------------------------------------------"
   cd ~/nagiosinstall
   tar zxvf nagios-plugins-$nagios_plugins_version.tar.gz
   cd nagios-plugins-$nagios_plugins_version
-  ./configure --with-nagios-user=nagios --with-nagios-group=nagios --enable-extra-opts
+  ./configure --with-nagios-user=$nagios_user --with-nagios-group=$nagios_group --enable-extra-opts
   make
   make install
 
   # Compilation de NRPE
   cd ~/nagiosinstall
   echo "----------------------------------------------------"
-  echo "Compilation du plugin NRPE"
+  echo "NRPED compilation"
   echo "----------------------------------------------------"
   tar zxvf nrpe-$nrpe_version.tar.gz
   cd nrpe-$nrpe_version
 	if [[ $check_x64 -ne 0 ]]; then
-		./configure --with-ssl=/usr/bin/openssl --with-ssl-lib=/usr/lib/x86_64-linux-gnu --enable-command-args --enable-ssl
+		./configure --with-nagios-user=$nagios_user --with-nagios-group=$nagios_group --with-ssl=/usr/bin/openssl --with-ssl-lib=/usr/lib/x86_64-linux-gnu --enable-command-args --enable-ssl
 	else
-		./configure --with-ssl=/usr/bin/openssl --with-ssl-lib=/usr/lib --enable-command-args --enable-ssl
+		./configure --with-nagios-user=$nagios_user --with-nagios-group=$nagios_group --with-ssl=/usr/bin/openssl --with-ssl-lib=/usr/lib --enable-command-args --enable-ssl
 	fi
   make all
   make install-plugin && make install-daemon && make install-daemon-config && make install-xinetd
@@ -105,7 +111,7 @@ installation() {
   # Installation des plugins additionnels
   plugins_list="check_ddos.pl check_memory check_url.pl"
   echo "----------------------------------------------------"
-  echo "Telechargement des plugins additionnels"
+  echo "Install additionals plugins for Nagios"
   echo $plugins_list
   echo "----------------------------------------------------"
   cd /usr/local/nagios/libexec
@@ -114,7 +120,7 @@ installation() {
     rm -f $i > /dev/null
     $wget https://raw.github.com/nicolargo/nagiosautoinstall/master/$i
     chmod a+rx $i
-    chown nagios:nagios $i
+    chown $nagios_user:$nagios_group $i
     # Conf file
     grep $i /usr/local/nagios/etc/objects/commands.cfg > /dev/null
     if [ $? -ne 0 ]
@@ -164,7 +170,7 @@ EOF
 # Fonction: Verifie si Nagios les fichiers de conf sont OK
 check() {
   echo "----------------------------------------------------"
-  echo "Verification des fichiers de configuration de Nagios"
+  echo "Check the Nagios configuration"
   echo "----------------------------------------------------"
   /usr/local/nagios/bin/nagios -v /usr/local/nagios/etc/nagios.cfg
 }
@@ -172,17 +178,17 @@ check() {
 # Fonction: Lancement de Nagios
 start() {
   echo "----------------------------------------------------"
-  echo "Lancement de Nagios"
+  echo "Run Nagios"
   echo "----------------------------------------------------"
   /etc/init.d/nagios start
-  echo "Interface d'administration par cet URL: http://localhost/nagios/"
-  echo "Utilisateur: nagiosadmin"
+  echo "Nagios Web interface URL:     http://localhost/nagios/"
+  echo "Nagios Web interface account: $nagiosweb_user"
 }
 
 # Programme principal
 if [ "$(id -u)" != "0" ]; then
-	echo "Il faut les droits d'administration pour lancer ce script."
-	echo "Syntaxe: sudo $0"
+	echo "You need admin (root) right to run the script."
+	echo "Syntax: sudo $0"
 	exit 1
 fi
 installation
