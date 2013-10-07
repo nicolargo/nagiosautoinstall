@@ -21,13 +21,13 @@ import os, sys, platform, getopt, shutil, logging, getpass
 # Global variables
 #-----------------------------------------------------------------------------
 
-_VERSION = "4.0.0_01"
+_VERSION = "4.0.0_02"
 _DEBUG = 0
 log_file = "/tmp/nagiosautoupdate.log"
 
 nagios_core_version = "4"
 nagios_core_subversion = "4.0.0"
-nagios_plugins_version = "1.4.16"
+nagios_plugins_version = "1.5"
 nrpe_version = "2.15"
 
 nagios_user = "nagios"
@@ -177,7 +177,7 @@ def nagiosupdate():
   showexec ("Download Nagios Core version %s" % nagios_core_subversion,
             "wget --no-check-certificate -c -O /tmp/nagios-%s.tar.gz http://prdownloads.sourceforge.net/sourceforge/nagios/nagios-%s.tar.gz" % (nagios_core_subversion, nagios_core_subversion), 1)
   showexec ("Download Nagios Plugins version %s" % nagios_plugins_version,
-            "wget --no-check-certificate -c -O /tmp/nagios-plugins-%s.tar.gz http://prdownloads.sourceforge.net/sourceforge/nagiosplug/nagios-plugins-%s.tar.gz" % (nagios_plugins_version, nagios_plugins_version), 1)
+            "wget --no-check-certificate -c -O /tmp/nagios-plugins-%s.tar.gz https://www.nagios-plugins.org/download/nagios-plugins-%s.tar.gz" % (nagios_plugins_version, nagios_plugins_version), 1)
   showexec ("Download NRPE version %s" % nrpe_version,
             "wget --no-check-certificate -c -O /tmp/nrpe-%s.tar.gz http://surfnet.dl.sourceforge.net/sourceforge/nagios/nrpe-%s.tar.gz" % (nrpe_version, nrpe_version), 1)
 

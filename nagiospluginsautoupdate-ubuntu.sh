@@ -6,9 +6,9 @@
 #
 # Syntaxe: # sudo ./nagiospluginsautoupdate-ubuntu.sh
 #
-version="0.7"
+version="1.5"
 
-nagios_plugins_version="1.4.16"
+nagios_plugins_version="1.5"
 
 # Fonction: installation
 update() {
@@ -37,7 +37,7 @@ update() {
   echo "Telechargement des sources"
   echo "Nagios Plugin version: $nagios_plugins_version"
   echo "----------------------------------------------------"
-  wget -c http://prdownloads.sourceforge.net/sourceforge/nagiosplug/nagios-plugins-$nagios_plugins_version.tar.gz
+  wget -c https://www.nagios-plugins.org/download/nagios-plugins-$nagios_plugins_version.tar.gz
 
   # Compilation de Nagios plugins
   echo "----------------------------------------------------"

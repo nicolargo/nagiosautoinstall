@@ -10,11 +10,11 @@
 # !!! Works fine but better use the Python script nagiosautoupdate.py 
 # !!!
 
-version="4.0.0_01"
+version="4.0.0_02"
 
 nagios_core_version="4"
 nagios_core_subversion="4.0.0"
-nagios_plugins_version="1.4.16"
+nagios_plugins_version="1.5"
 nrpe_version="2.15"
 
 nagios_user="nagios"
@@ -57,7 +57,7 @@ update() {
   echo "NRPE version:          $nrpe_version"
   echo "----------------------------------------------------"
   $wget http://prdownloads.sourceforge.net/sourceforge/nagios/nagios-$nagios_core_subversion.tar.gz
-  $wget http://prdownloads.sourceforge.net/sourceforge/nagiosplug/nagios-plugins-$nagios_plugins_version.tar.gz
+  $wget https://www.nagios-plugins.org/download/nagios-plugins-$nagios_plugins_version.tar.gz
   $wget http://surfnet.dl.sourceforge.net/sourceforge/nagios/nrpe-$nrpe_version.tar.gz
 
   # Compilation de Nagios Core
