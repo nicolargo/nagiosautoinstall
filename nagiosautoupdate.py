@@ -21,12 +21,12 @@ import os, sys, platform, getopt, shutil, logging, getpass
 # Global variables
 #-----------------------------------------------------------------------------
 
-_VERSION = "4.0.0_02"
+_VERSION = "4.0.1_01"
 _DEBUG = 0
 log_file = "/tmp/nagiosautoupdate.log"
 
 nagios_core_version = "4"
-nagios_core_subversion = "4.0.0"
+nagios_core_subversion = "4.0.1"
 nagios_plugins_version = "1.5"
 nrpe_version = "2.15"
 
@@ -185,13 +185,13 @@ def nagiosupdate():
   showexec ("Uncompress Nagios Core" ,
             "cd /tmp ; tar zxvf nagios-%s.tar.gz" % nagios_core_subversion, 1)
   showexec ("Configure Nagios Core" ,
-            "cd /tmp/nagios ; ./configure --with-nagios-user=%s --with-nagios-group=%s --with-command-user=%s --with-command-group=%s --enable-event-broker --enable-nanosleep --enable-embedded-perl --with-perlcache" % (nagios_user, nagios_group, nagios_user, nagios_group), 1)
+            "cd /tmp/nagios-%s ; ./configure --with-nagios-user=%s --with-nagios-group=%s --with-command-user=%s --with-command-group=%s --enable-event-broker --enable-nanosleep --enable-embedded-perl --with-perlcache" % (nagios_core_subversion, nagios_user, nagios_group, nagios_user, nagios_group), 1)
   showexec ("Make Nagios Core" ,
-            "cd /tmp/nagios ; make all", 1)
+            "cd /tmp/nagios-%s ; make all" % nagios_core_subversion, 1)
   # showexec ("Correct a bug in the installer (http://bit.ly/roq2ea)" ,
   #           "cd /tmp/nagios/html ; sed -i 's/for file in includes\/rss\/\*\;/for file in includes\/rss\/\*\.\*\;/g' ./Makefile ; sed -i 's/for file in includes\/rss\/extlib\/\*\;/for file in includes\/rss\/extlib\/\*\.\*\;/g' ./Makefile", 1)
   showexec ("Install Nagios Core" ,
-            "cd /tmp/nagios ; make fullinstall", 1)
+            "cd /tmp/nagios-%s ; make fullinstall" % nagios_core_subversion, 1)
 
   # Update Nagios Plugins
   showexec ("Uncompress Nagios Plugins" ,

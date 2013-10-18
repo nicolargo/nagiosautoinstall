@@ -6,7 +6,7 @@
 #
 # Syntaxe: # sudo ./nagiosautoinstall-ubuntu.sh
 #
-version="4.0.0_02"
+version="4.0.1_01"
 
 nagios_core_version="4"
 nagios_core_subversion="4.0.1"

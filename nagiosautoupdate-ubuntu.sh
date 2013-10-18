@@ -10,10 +10,10 @@
 # !!! Works fine but better use the Python script nagiosautoupdate.py 
 # !!!
 
-version="4.0.0_02"
+version="4.0.1_02"
 
 nagios_core_version="4"
-nagios_core_subversion="4.0.0"
+nagios_core_subversion="4.0.1"
 nagios_plugins_version="1.5"
 nrpe_version="2.15"
 
@@ -68,7 +68,7 @@ update() {
   echo "----------------------------------------------------"
   cd /tmp/src
   tar zxvf nagios-$nagios_core_subversion.tar.gz
-  cd nagios
+  cd nagios-$nagios_core_subversion
   ./configure --with-nagios-user=$nagios_user --with-nagios-group=$nagios_group --with-command-user=$nagios_user --with-command-group=$nagios_group --enable-event-broker --enable-nanosleep --enable-embedded-perl --with-perlcache
   make all
   # Hack pb sur install HTML
