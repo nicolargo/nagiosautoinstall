@@ -9,7 +9,7 @@
 version="4.0.0_02"
 
 nagios_core_version="4"
-nagios_core_subversion="4.0.0"
+nagios_core_subversion="4.0.1"
 nagios_plugins_version="1.5"
 nrpe_version="2.15"
 
@@ -42,35 +42,35 @@ installation() {
   # Creation de l'utilisateur nagios et du groupe nagios
   echo "----------------------------------------------------"
   echo "Create the Nagios user and group"
-  echo "Nagios user:  $nagios_user"
-  echo "Nagios group: $nagios_group"  
+  echo "Nagios user:  ${nagios_user}"
+  echo "Nagios group: ${nagios_group}"  
   echo "----------------------------------------------------"
-  echo "Add the Nagios user account ($nagios_user) in the www-data group"
-  useradd -m -G www-data -s /bin/bash $nagios_user
-  echo "Set a password for the Nagios user account ($nagios_user)"
-  passwd $nagios_user
+  echo "Add the Nagios user account (${nagios_user}) in the www-data group"
+  useradd -m -G www-data -s /bin/bash ${nagios_user}
+  echo "Set a password for the Nagios user account (${nagios_user})"
+  passwd ${nagios_user}
 
   # Recuperation des sources
   echo "----------------------------------------------------"
   echo "Download sources"
-  echo "Nagios Core version:   $nagios_core_subversion"
-  echo "Nagios Plugin version: $nagios_plugins_version"
-  echo "NRPE version:          $nrpe_version"
+  echo "Nagios Core version:   ${nagios_core_subversion}"
+  echo "Nagios Plugin version: ${nagios_plugins_version}"
+  echo "NRPE version:          ${nrpe_version}"
   echo "----------------------------------------------------"
   mkdir ~/nagiosinstall
   cd ~/nagiosinstall
-  $wget http://prdownloads.sourceforge.net/sourceforge/nagios/nagios-$nagios_core_subversion.tar.gz
-  $wget https://www.nagios-plugins.org/download/nagios-plugins-$nagios_plugins_version.tar.gz
-  $wget http://surfnet.dl.sourceforge.net/sourceforge/nagios/nrpe-$nrpe_version.tar.gz
+  $wget http://prdownloads.sourceforge.net/sourceforge/nagios/nagios-${nagios_core_subversion}.tar.gz
+  $wget https://www.nagios-plugins.org/download/nagios-plugins-${nagios_plugins_version}.tar.gz
+  $wget http://surfnet.dl.sourceforge.net/sourceforge/nagios/nrpe-${nrpe_version}.tar.gz
 
   # Compilation de Nagios Core
   echo "----------------------------------------------------"
   echo "Nagios Core compilation"
   echo "----------------------------------------------------"
   cd ~/nagiosinstall
-  tar zxvf nagios-$nagios_core_subversion.tar.gz
+  tar zxvf nagios-${nagios_core_subversion}.tar.gz
   cd nagios
-  ./configure --with-nagios-user=$nagios_user --with-nagios-group=$nagios_group --with-command-user=$nagios_user --with-command-group=$nagios_group --enable-event-broker --enable-nanosleep --enable-embedded-perl --with-perlcache
+  ./configure --with-nagios-user=${nagios_user} --with-nagios-group=${nagios_group} --with-command-user=${nagios_user} --with-command-group=$nagios_group --enable-event-broker --enable-nanosleep --enable-embedded-perl --with-perlcache
   make all
   make fullinstall
   make install-config
@@ -79,7 +79,7 @@ installation() {
   echo "Set the password for the Nagios Web interface account"
   echo "Nagios web interface account: $nagiosweb_user"
   echo "----------------------------------------------------"
-  htpasswd -c /usr/local/nagios/etc/htpasswd.users $nagiosweb_user
+  htpasswd -c /usr/local/nagios/etc/htpasswd.users ${nagiosweb_user}
   /etc/init.d/apache2 reload
 
   # Compilation de Nagios plugins
@@ -87,9 +87,9 @@ installation() {
   echo "Nagios plugins compilation"
   echo "----------------------------------------------------"
   cd ~/nagiosinstall
-  tar zxvf nagios-plugins-$nagios_plugins_version.tar.gz
-  cd nagios-plugins-$nagios_plugins_version
-  ./configure --with-nagios-user=$nagios_user --with-nagios-group=$nagios_group --enable-extra-opts
+  tar zxvf nagios-plugins-${nagios_plugins_version}.tar.gz
+  cd nagios-plugins-${nagios_plugins_version}
+  ./configure --with-nagios-user=${nagios_user} --with-nagios-group=${nagios_group} --enable-extra-opts
   make
   make install
 
@@ -98,12 +98,12 @@ installation() {
   echo "----------------------------------------------------"
   echo "NRPED compilation"
   echo "----------------------------------------------------"
-  tar zxvf nrpe-$nrpe_version.tar.gz
-  cd nrpe-$nrpe_version
-	if [[ $check_x64 -ne 0 ]]; then
-		./configure --with-nagios-user=$nagios_user --with-nagios-group=$nagios_group --with-ssl=/usr/bin/openssl --with-ssl-lib=/usr/lib/x86_64-linux-gnu --enable-command-args --enable-ssl
+  tar zxvf nrpe-${nrpe_version}.tar.gz
+  cd nrpe-${nrpe_version}
+	if [[ ${check_x64} -ne 0 ]]; then
+		./configure --with-nagios-user=${nagios_user} --with-nagios-group=${nagios_group} --with-ssl=/usr/bin/openssl --with-ssl-lib=/usr/lib/x86_64-linux-gnu --enable-command-args --enable-ssl
 	else
-		./configure --with-nagios-user=$nagios_user --with-nagios-group=$nagios_group --with-ssl=/usr/bin/openssl --with-ssl-lib=/usr/lib --enable-command-args --enable-ssl
+		./configure --with-nagios-user=${nagios_user} --with-nagios-group=${nagios_group} --with-ssl=/usr/bin/openssl --with-ssl-lib=/usr/lib --enable-command-args --enable-ssl
 	fi
   make all
   make install-plugin && make install-daemon && make install-daemon-config && make install-xinetd
@@ -112,15 +112,15 @@ installation() {
   plugins_list="check_ddos.pl check_memory check_url.pl"
   echo "----------------------------------------------------"
   echo "Install additionals plugins for Nagios"
-  echo $plugins_list
+  echo ${plugins_list}
   echo "----------------------------------------------------"
   cd /usr/local/nagios/libexec
-  for i in `echo $plugins_list`
+  for i in `echo ${plugins_list}`
   do
     rm -f $i > /dev/null
     $wget https://raw.github.com/nicolargo/nagiosautoinstall/master/$i
     chmod a+rx $i
-    chown $nagios_user:$nagios_group $i
+    chown ${nagios_user}:${nagios_group} $i
     # Conf file
     grep $i /usr/local/nagios/etc/objects/commands.cfg > /dev/null
     if [ $? -ne 0 ]
@@ -182,7 +182,7 @@ start() {
   echo "----------------------------------------------------"
   /etc/init.d/nagios start
   echo "Nagios Web interface URL:     http://localhost/nagios/"
-  echo "Nagios Web interface account: $nagiosweb_user"
+  echo "Nagios Web interface account: ${nagiosweb_user}"
 }
 
 # Programme principal
