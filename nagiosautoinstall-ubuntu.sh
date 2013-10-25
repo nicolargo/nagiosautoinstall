@@ -6,7 +6,7 @@
 #
 # Syntaxe: # sudo ./nagiosautoinstall-ubuntu.sh
 #
-version="4.0.1_01"
+version="4.0.1_02"
 
 nagios_core_version="4"
 nagios_core_subversion="4.0.1"
@@ -75,6 +75,12 @@ installation() {
   make fullinstall
   make install-config
   ln -s /etc/init.d/nagios /etc/rcS.d/S99nagios
+  echo "----------------------------------------------------"
+  echo "Hack for Nagios 4.0 and 4.0.1"
+  echo "Solve following issue on daemon script"
+  echo "----------------------------------------------------"
+  apt-get install daemon
+  sed -i 's/^\.\ \/etc\/rc.d\/init.d\/functions$/\.\ \/lib\/lsb\/init-functions/g' /etc/init.d/nagios
   echo "----------------------------------------------------"
   echo "Set the password for the Nagios Web interface account"
   echo "Nagios web interface account: $nagiosweb_user"

@@ -71,12 +71,13 @@ update() {
   cd nagios-$nagios_core_subversion
   ./configure --with-nagios-user=$nagios_user --with-nagios-group=$nagios_group --with-command-user=$nagios_user --with-command-group=$nagios_group --enable-event-broker --enable-nanosleep --enable-embedded-perl --with-perlcache
   make all
-  # Hack pb sur install HTML
-  # No need anymore in version 4.0.0
-  # sed -i 's/for file in includes\/rss\/\*\;/for file in includes\/rss\/\*\.\*\;/g' ./html/Makefile
-  # sed -i 's/for file in includes\/rss\/extlib\/\*\;/for file in includes\/rss\/extlib\/\*\.\*\;/g' ./html/Makefile
-  # Fin hack
   make fullinstall
+  echo "----------------------------------------------------"
+  echo "Hack for Nagios 4.0 and 4.0.1"
+  echo "Solve following issue on daemon script"
+  echo "----------------------------------------------------"
+  apt-get install daemon
+  sed -i 's/^\.\ \/etc\/rc.d\/init.d\/functions$/\.\ \/lib\/lsb\/init-functions/g' /etc/init.d/nagios  
 
   # Compilation de Nagios plugins
   echo "----------------------------------------------------"
