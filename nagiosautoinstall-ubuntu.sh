@@ -75,6 +75,7 @@ installation() {
   make fullinstall
   make install-config
   ln -s /etc/init.d/nagios /etc/rcS.d/S99nagios
+  
   echo "----------------------------------------------------"
   echo "Hack for Nagios 4.0 and 4.0.1"
   echo "Solve following issue on daemon script"
@@ -83,7 +84,9 @@ installation() {
   if [ !  -e /etc/rc.d/init.d/functions ]; 
     then 
         sudo sed -i "s/^\.\ \/etc\/rc.d\/init.d\/functions$/\.\ \/lib\/lsb\/init-functions/g" /etc/init.d/nagios
-    fi  echo "----------------------------------------------------"
+    fi
+
+  echo "----------------------------------------------------"
   echo "Set the password for the Nagios Web interface account"
   echo "Nagios web interface account: $nagiosweb_user"
   echo "----------------------------------------------------"
