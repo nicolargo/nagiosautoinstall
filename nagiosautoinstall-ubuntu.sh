@@ -80,8 +80,10 @@ installation() {
   echo "Solve following issue on daemon script"
   echo "----------------------------------------------------"
   apt-get install daemon
-  sed -i 's/^\.\ \/etc\/rc.d\/init.d\/functions$/\.\ \/lib\/lsb\/init-functions/g' /etc/init.d/nagios
-  echo "----------------------------------------------------"
+  if [ !  -e /etc/rc.d/init.d/functions ]; 
+    then 
+        sudo sed -i "s/^\.\ \/etc\/rc.d\/init.d\/functions$/\.\ \/lib\/lsb\/init-functions/g" /etc/init.d/nagios
+    fi  echo "----------------------------------------------------"
   echo "Set the password for the Nagios Web interface account"
   echo "Nagios web interface account: $nagiosweb_user"
   echo "----------------------------------------------------"

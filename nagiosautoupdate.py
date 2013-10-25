@@ -194,7 +194,7 @@ def nagiosupdate():
             "cd /tmp/nagios-%s ; make fullinstall" % nagios_core_subversion, 1)
   # Solve start daemon issue: /etc/init.d/nagios: 20: .: Can't open /etc/rc.d/init.d/functions
   showexec ("Hack for Nagios 4.0 and 4.0.1" ,
-            "apt-get install daemon && sed -i 's/^\.\ \/etc\/rc.d\/init.d\/functions$/\.\ \/lib\/lsb\/init-functions/g' /etc/init.d/nagios", 1)
+            "apt-get install daemon && if [ ! -e /etc/rc.d/init.d/functions ]; then sed -i 's/^\.\ \/etc\/rc.d\/init.d\/functions$/\.\ \/lib\/lsb\/init-functions/g' /etc/init.d/nagios; fi", 1)
 
   # Update Nagios Plugins
   showexec ("Uncompress Nagios Plugins" ,

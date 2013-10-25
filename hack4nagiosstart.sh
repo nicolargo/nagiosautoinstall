@@ -9,5 +9,8 @@
 # Nicolargo - 2013 - GPL
 
 sudo apt-get install daemon
-sudo sed -i "s/^\.\ \/etc\/rc.d\/init.d\/functions$/\.\ \/lib\/lsb\/init-functions/g" /etc/init.d/nagios
+if [ ! -e /etc/rc.d/init.d/functions ]; 
+    then 
+        sudo sed -i "s/^\.\ \/etc\/rc.d\/init.d\/functions$/\.\ \/lib\/lsb\/init-functions/g" /etc/init.d/nagios
+    fi
 sudo service nagios start
