@@ -85,6 +85,8 @@ installation() {
     then 
         sudo sed -i 's/^\.\ \/etc\/rc.d\/init.d\/functions$/\.\ \/lib\/lsb\/init-functions/g' /etc/init.d/nagios
         sudo sed -i 's/status\ /status_of_proc\ /g' /etc/init.d/nagios
+        sudo sed -i 's/daemon\ --user=\$user\ \$exec\ -ud\ \$config/daemon\ --user=\$user\ --\ \$exec\ -d\ \$config/g' /etc/init.d/nagios
+        sudo sed -i 's/\/var\/lock\/subsys\/\$prog/\/var\/lock\/\$prog/g' /etc/init.d/nagios
     fi
 
   echo "----------------------------------------------------"
