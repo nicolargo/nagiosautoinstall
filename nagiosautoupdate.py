@@ -21,7 +21,7 @@ import os, sys, platform, getopt, shutil, logging, getpass
 # Global variables
 #-----------------------------------------------------------------------------
 
-_VERSION = "4.0.1_01"
+_VERSION = "4.0.1_02"
 _DEBUG = 0
 log_file = "/tmp/nagiosautoupdate.log"
 
@@ -194,7 +194,8 @@ def nagiosupdate():
             "cd /tmp/nagios-%s ; make fullinstall" % nagios_core_subversion, 1)
   # Solve start daemon issue: /etc/init.d/nagios: 20: .: Can't open /etc/rc.d/init.d/functions
   showexec ("Hack for Nagios 4.0 and 4.0.1" ,
-            "apt-get install daemon && if [ ! -e /etc/rc.d/init.d/functions ]; then sed -i 's/^\.\ \/etc\/rc.d\/init.d\/functions$/\.\ \/lib\/lsb\/init-functions/g' /etc/init.d/nagios; sed -i 's/status\ /status_of_proc\ /g' /etc/init.d/nagios; sed -i 's/daemon\ --user=\$user\ \$exec\ -ud\ \$config/daemon\ --user=\$user\ --\ \$exec\ -d\ \$config/g' /etc/init.d/nagios; sed -i 's/\/var\/lock\/subsys\/\$prog/\/var\/lock\/\$prog/g' /etc/init.d/nagios fi;", 1)
+            "apt-get install daemon && if [ ! -e /etc/rc.d/init.d/functions ]; then sed -i 's/^\.\ \/etc\/rc.d\/init.d\/functions$/\.\ \/lib\/lsb\/init-functions/g' /etc/init.d/nagios; sed -i 's/status\ /status_of_proc\ /g' /etc/init.d/nagios; sed -i 's/daemon\ --user=\$user\ \$exec\ -ud\ \$config/daemon\ --user=\$user\ --\ \$exec\ -d\ \$config/g' /etc/init.d/nagios; sed -i 's/\/var\/lock\/subsys\/\$prog/\/var\/lock\/\$prog/g' /etc/init.d/nagios; sed -i 's/\/sbin\/service\ nagios\ configtest/\/usr\/sbin\/service\ nagios\ configtest/g'; /etc/init.d/nagios sed -i 's/\"\ \=\=\ \"/\"\ \=\ \"/g' /etc/init.d/nagios; sed -i 's/\#\#killproc\ \-p\ \$\{pidfile\}\ \-d\ 10/killproc\ \-p \$\{pidfile\}/g' /etc/init.d/nagios; fi;", 1)
+        
   # Update Nagios Plugins
   showexec ("Uncompress Nagios Plugins" ,
             "cd /tmp ; tar zxvf nagios-plugins-%s.tar.gz" % nagios_plugins_version, 1)

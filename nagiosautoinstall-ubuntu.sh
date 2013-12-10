@@ -6,7 +6,7 @@
 #
 # Syntaxe: # sudo ./nagiosautoinstall-ubuntu.sh
 #
-version="4.0.1_02"
+version="4.0.1_03"
 
 nagios_core_version="4"
 nagios_core_subversion="4.0.1"
@@ -87,6 +87,9 @@ installation() {
         sudo sed -i 's/status\ /status_of_proc\ /g' /etc/init.d/nagios
         sudo sed -i 's/daemon\ --user=\$user\ \$exec\ -ud\ \$config/daemon\ --user=\$user\ --\ \$exec\ -d\ \$config/g' /etc/init.d/nagios
         sudo sed -i 's/\/var\/lock\/subsys\/\$prog/\/var\/lock\/\$prog/g' /etc/init.d/nagios
+        sudo sed -i 's/\/sbin\/service\ nagios\ configtest/\/usr\/sbin\/service\ nagios\ configtest/g' /etc/init.d/nagios
+        sudo sed -i 's/\"\ \=\=\ \"/\"\ \=\ \"/g' /etc/init.d/nagios
+        sudo sed -i 's/\#\#killproc\ \-p\ \$\{pidfile\}\ \-d\ 10/killproc\ \-p \$\{pidfile\}/g' /etc/init.d/nagios
     fi
 
   echo "----------------------------------------------------"
