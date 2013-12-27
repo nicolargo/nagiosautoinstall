@@ -6,7 +6,7 @@
 #
 # Syntaxe: # sudo ./nagiosautoinstall-ubuntu.sh
 #
-version="4.0.1_03"
+version="4.0.2_01"
 
 nagios_core_version="4"
 nagios_core_subversion="4.0.1"
@@ -90,6 +90,7 @@ installation() {
         sudo sed -i 's/\/sbin\/service\ nagios\ configtest/\/usr\/sbin\/service\ nagios\ configtest/g' /etc/init.d/nagios
         sudo sed -i 's/\"\ \=\=\ \"/\"\ \=\ \"/g' /etc/init.d/nagios
         sudo sed -i 's/\#\#killproc\ \-p\ \$\{pidfile\}\ \-d\ 10/killproc\ \-p \$\{pidfile\}/g' /etc/init.d/nagios
+        sudo sed -i 's/runuser/su/g' /etc/init.d/nagios
     fi
 
   echo "----------------------------------------------------"

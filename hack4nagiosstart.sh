@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# Hack for Nagios 4.0 and 4.0.1
+# Hack for Nagios 4.x
 #
 # Solve following issue on daemon script:
 # /etc/init.d/nagios start
