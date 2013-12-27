@@ -90,6 +90,7 @@ installation() {
         sudo sed -i 's/\/sbin\/service\ nagios\ configtest/\/usr\/sbin\/service\ nagios\ configtest/g' /etc/init.d/nagios
         sudo sed -i 's/\"\ \=\=\ \"/\"\ \=\ \"/g' /etc/init.d/nagios
         sudo sed -i 's/\#\#killproc\ \-p\ \$\{pidfile\}\ \-d\ 10/killproc\ \-p \$\{pidfile\}/g' /etc/init.d/nagios
+        sudo sed -i 's/runuser/su/g' /etc/init.d/nagios
     fi
 
   echo "----------------------------------------------------"
