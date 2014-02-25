@@ -33,5 +33,8 @@ if [ ! -e /etc/rc.d/init.d/functions ];
         # options : remplacer options ligne 78 options="-d" par options="-- -d" pour éviter que le -u de la config precached
         # ne soit interprété comme un --user par la commande daemon...
         ${sudo}sed -i "s/\(options=\)\"-d\"/\1\"-- -d\"/" /etc/init.d/nagios
+        # kill -9 $daemonpid : la commande daemon précedent suffit il n'y a pas d'intérêt a utiliser kill -9 sauf si 
+        # $daemonpid existe encore
+        ${sudo}sed -i "s/\(kill -9 $daemonpid\)/if [ $daemonpid ] ; then \1 ; fi/" /etc/init.d/nagios
     fi
 ${sudo}service nagios start
